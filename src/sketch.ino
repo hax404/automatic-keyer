@@ -1,6 +1,8 @@
-#define SPEED 150
+#define SPEED 150	// length of dit in ms
+#define FREQ 750	// tone frequency
 #define P_DIT 2	// DIT
 #define P_DAH 3	// DAH
+#define P_MAN 4	// manual
 #define P_AUDIO 12	// Audio output
 #define P_TXOUT 13	// Tranceiver output
 
@@ -8,6 +10,7 @@
 void setup(){
 	pinMode(P_DIT, INPUT_PULLUP);
 	pinMode(P_DAH, INPUT_PULLUP);
+	pinMode(P_MAN, INPUT_PULLUP);
 	pinMode(P_AUDIO, OUTPUT);
 	pinMode(P_TXOUT, OUTPUT);
 }
@@ -22,7 +25,7 @@ void beep(int curTone){
 	}
 
 	digitalWrite(P_TXOUT, HIGH);
-	tone(P_AUDIO, 700, toneLength);
+	tone(P_AUDIO, FREQ, toneLength);
 
 	// check if the other key is pressed while the current tone is played
 	for(int i = 0; i <= toneLength; i = i+10){
@@ -43,11 +46,21 @@ void beep(int curTone){
 }
 
 void loop(){
+	// automatic
 	if(digitalRead(P_DIT) == LOW){
 		beep(1);
 	}
 	else if(digitalRead(P_DAH) == LOW){
 		beep(2);
+	}
+
+	// manual
+	else if(digitalRead(P_MAN) == LOW){
+		tone(P_AUDIO, FREQ);
+		do{
+			delay(10);
+		} while(digitalRead(P_MAN) == LOW);
+		noTone(P_AUDIO);
 	}
 }
 
