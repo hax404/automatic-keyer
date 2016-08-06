@@ -57,9 +57,11 @@ void loop(){
 	// manual
 	else if(digitalRead(P_MAN) == LOW){
 		tone(P_AUDIO, FREQ);
+		digitalWrite(P_TXOUT, HIGH);
 		do{
 			delay(10);
 		} while(digitalRead(P_MAN) == LOW);
+		digitalWrite(P_TXOUT, LOW);
 		noTone(P_AUDIO);
 	}
 }
