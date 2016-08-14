@@ -3,8 +3,8 @@
 #define P_DIT 2	// DIT
 #define P_DAH 3	// DAH
 #define P_MAN 4	// manual
-#define P_AUDIO 12	// Audio output
-#define P_TXOUT 13	// Tranceiver output
+#define P_AUDIO 5	// Audio output (must be pwm)
+#define P_TXOUT 6	// Tranceiver output
 
 
 void setup(){
