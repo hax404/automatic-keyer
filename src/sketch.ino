@@ -15,6 +15,8 @@ struct symbol{
 struct symbol *start;
 struct symbol *cur = start;
 
+// Source: https://commons.wikimedia.org/wiki/File:Morse_code_tree3.png
+// FIXME: apply from http://www.itu.int/dms_pubrec/itu-r/rec/m/R-REC-M.1677-1-200910-I!!PDF-E.pdf
 void createTree(){
     struct symbol //*start = (struct symbol*) 0,
         *last = (struct symbol*) 0,
@@ -229,6 +231,92 @@ void createTree(){
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah->dah->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 't';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'n';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'd';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'b';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '6';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '-';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '=';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'x';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '/';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'k';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'c';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ç
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'y';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ĥĤ
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah->dah->dit = temp;
+
+
 }
 
 void setup(){
