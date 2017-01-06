@@ -1,4 +1,4 @@
-#define SPEED 150    // length of dit in ms
+#define SPEED 120    // length of dit in ms
 #define FREQ 750    // tone frequency
 #define P_DIT 2    // DIT
 #define P_DAH 3    // DAH
@@ -6,6 +6,230 @@
 #define P_AUDIO 5    // Audio output (must be pwm)
 #define P_TXOUT 6    // Tranceiver output
 
+struct symbol{
+    struct symbol *dit;
+    struct symbol *dah;
+    char character;
+};
+
+struct symbol *start;
+struct symbol *cur = start;
+
+void createTree(){
+    struct symbol //*start = (struct symbol*) 0,
+        *last = (struct symbol*) 0,
+        *temp = (struct symbol*) 0;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'e';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'i';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 's';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'h';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '5';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '4';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'v';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ŝ
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '3';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dit->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'u';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'f';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // é
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ü
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // Đ
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '?';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '_';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '2';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dit->dah->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'a';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'r';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'l';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // è
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '"';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ä
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '+';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '.';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dit->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'w';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'p';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // pb
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // à
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '@';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dit->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'j';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ĵ
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '1';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dah->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '\'';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dit->dah->dah->dah->dah->dah->dit = temp;
+}
 
 void setup(){
     pinMode(P_DIT, INPUT_PULLUP);
@@ -13,6 +237,20 @@ void setup(){
     pinMode(P_MAN, INPUT_PULLUP);
     pinMode(P_AUDIO, OUTPUT);
     pinMode(P_TXOUT, OUTPUT);
+
+    Serial.begin(115200);
+    createTree();
+
+    tone(P_AUDIO, 1000, 150);
+    delay(150);
+    tone(P_AUDIO, 2000, 150);
+    delay(150);
+    tone(P_AUDIO, 1500, 150);
+    delay(150);
+    tone(P_AUDIO, 1750, 150);
+    delay(150);
+
+    Serial.println("Started automatic keyer");
 }
 
 void beep(int curTone){
@@ -20,9 +258,16 @@ void beep(int curTone){
     unsigned int toneLength;
 
     switch(curTone){
-        case 1: toneLength = 1*SPEED; break;
-        case 2: toneLength = 3*SPEED; break;    // one Dah = 3*Dit
+        case 1:
+            toneLength = 1*SPEED;
+            cur = cur->dit;
+            break;
+        case 2:
+            toneLength = 3*SPEED;
+            cur = cur->dah;
+            break;    // one Dah = 3*Dit
     }
+//    Serial.print(cur->character);
 
     digitalWrite(P_TXOUT, HIGH);
     tone(P_AUDIO, FREQ, toneLength);
@@ -53,6 +298,18 @@ void beep(int curTone){
 
     if(nextTone){
         beep(nextTone);
+    }
+    else{
+        if(digitalRead(P_DIT) == LOW){
+            beep(1);
+        }
+        else if(digitalRead(P_DAH) == LOW){
+            beep(2);
+        }
+        else{
+            Serial.print(cur->character);
+            cur = start;
+        }
     }
 }
 
