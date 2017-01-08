@@ -17,6 +17,7 @@ struct symbol *cur = start;
 
 // Source: https://commons.wikimedia.org/wiki/File:Morse_code_tree3.png
 // FIXME: apply from http://www.itu.int/dms_pubrec/itu-r/rec/m/R-REC-M.1677-1-200910-I!!PDF-E.pdf
+// Order: preorder
 void createTree(){
     struct symbol //*start = (struct symbol*) 0,
         *last = (struct symbol*) 0,
@@ -113,7 +114,7 @@ void createTree(){
     start->dit->dit->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = '?';
+    temp->character = '?';      // Question mark (note of interrogation or requestfor repetition of a transmission not understood)
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dah->dah->dit->dit = temp;
@@ -173,7 +174,7 @@ void createTree(){
     start->dit->dah->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = '.';
+    temp->character = '.';      // Full stop (period)
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dit->dah->dit->dah = temp;
@@ -215,7 +216,7 @@ void createTree(){
     start->dit->dah->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ĵ
+    temp->character = '\'';     // Apostrophe
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah->dah->dah->dit = temp;
@@ -227,7 +228,7 @@ void createTree(){
     start->dit->dah->dah->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = '\'';
+    temp->character = ' ';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah->dah->dah->dah->dit = temp;
@@ -263,7 +264,7 @@ void createTree(){
     start->dah->dit->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = '-';
+    temp->character = '-';      // Hyphen or dash or subtraction sign
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dit->dit->dit->dah = temp;
@@ -281,7 +282,7 @@ void createTree(){
     start->dah->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = '/';
+    temp->character = '/';      // Fraction bar or division sign
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dit->dah->dit = temp;
@@ -311,12 +312,100 @@ void createTree(){
     start->dah->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ĥĤ
+    temp->character = '(';      // Left-hand bracket (parenthesis)
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dah->dah->dit = temp;
 
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ')';      // Right-hand bracket (parenthesis)
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dit->dah->dah->dit->dah = temp;
 
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'm';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'g';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'z';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '7';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // unused node
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ',';      // Comma
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit->dit->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'q';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dit->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 'o';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ö
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '8';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ':';      // Colon or division sign
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dit->dit->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = ' ';      // ch
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dah = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '9';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dah->dit = temp;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = '0';
+    temp->dit = (struct symbol*) 0;
+    temp->dah = (struct symbol*) 0;
+    start->dah->dah->dah->dah->dah = temp;
 }
 
 void setup(){
