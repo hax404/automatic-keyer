@@ -1,3 +1,6 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
 #define SPEED 120    // length of dit in ms
 #define FREQ 750    // tone frequency
 #define P_DIT 2    // DIT
@@ -6,6 +9,9 @@
 #define P_AUDIO 5    // Audio output (must be pwm)
 #define P_TXOUT 6    // Tranceiver output
 
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+char buffer[17];
+
 struct symbol{
     struct symbol *dit;
     struct symbol *dah;
@@ -13,7 +19,7 @@ struct symbol{
 };
 
 struct symbol *start;
-struct symbol *cur = start;
+struct symbol *cur;
 
 // Source: https://commons.wikimedia.org/wiki/File:Morse_code_tree3.png
 // FIXME: apply from http://www.itu.int/dms_pubrec/itu-r/rec/m/R-REC-M.1677-1-200910-I!!PDF-E.pdf
@@ -29,26 +35,28 @@ void createTree(){
     temp->dah = (struct symbol*) 0;
     start = temp;
 
+    cur = start;
+
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'e';
+    temp->character = 'E';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'i';
+    temp->character = 'I';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 's';
+    temp->character = 'S';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'h';
+    temp->character = 'H';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dit->dit = temp;
@@ -66,7 +74,7 @@ void createTree(){
     start->dit->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'v';
+    temp->character = 'V';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dit->dah = temp;
@@ -84,13 +92,13 @@ void createTree(){
     start->dit->dit->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'u';
+    temp->character = 'U';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'f';
+    temp->character = 'F';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dit->dah->dit = temp;
@@ -132,13 +140,13 @@ void createTree(){
     start->dit->dit->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'a';
+    temp->character = 'A';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'r';
+    temp->character = 'R';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dit = temp;
@@ -180,13 +188,13 @@ void createTree(){
     start->dit->dah->dit->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'w';
+    temp->character = 'W';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'p';
+    temp->character = 'P';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah->dit = temp;
@@ -210,7 +218,7 @@ void createTree(){
     start->dit->dah->dah->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'j';
+    temp->character = 'J';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dit->dah->dah->dah->dah = temp;
@@ -234,25 +242,25 @@ void createTree(){
     start->dit->dah->dah->dah->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 't';
+    temp->character = 'T';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'n';
+    temp->character = 'N';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'd';
+    temp->character = 'D';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'b';
+    temp->character = 'B';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dit->dit = temp;
@@ -276,7 +284,7 @@ void createTree(){
     start->dah->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'x';
+    temp->character = 'X';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dit->dah = temp;
@@ -288,13 +296,13 @@ void createTree(){
     start->dah->dit->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'k';
+    temp->character = 'K';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'c';
+    temp->character = 'C';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dah->dit = temp;
@@ -306,7 +314,7 @@ void createTree(){
     start->dah->dit->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'y';
+    temp->character = 'Y';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dit->dah->dah = temp;
@@ -324,19 +332,19 @@ void createTree(){
     start->dah->dit->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'm';
+    temp->character = 'M';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'g';
+    temp->character = 'G';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'z';
+    temp->character = 'Z';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dah->dit->dit = temp;
@@ -360,13 +368,13 @@ void createTree(){
     start->dah->dah->dit->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'q';
+    temp->character = 'Q';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'o';
+    temp->character = 'O';
     temp->dit = (struct symbol*) 0;
     temp->dah = (struct symbol*) 0;
     start->dah->dah->dah = temp;
@@ -415,8 +423,18 @@ void setup(){
     pinMode(P_AUDIO, OUTPUT);
     pinMode(P_TXOUT, OUTPUT);
 
+    // initialize Serial
     Serial.begin(115200);
+
+    // initialize the LCD
+    lcd.begin();
+    lcd.backlight();
+    lcd.print("Behindertengleic");
+    lcd.setCursor(0,1);
+    lcd.print("hstellungsgesetz");
+
     createTree();
+    buffer[0] = '\0';
 
     tone(P_AUDIO, 1000, 150);
     delay(150);
@@ -427,7 +445,18 @@ void setup(){
     tone(P_AUDIO, 1750, 150);
     delay(150);
 
+    lcd.clear();
     Serial.println("Started automatic keyer");
+    printParams();
+    lcd.cursor();
+    lcd.blink();
+    lcd.setCursor(0,1);
+}
+
+void printParams(){
+    // FIXME: real values
+    lcd.setCursor(0,0);
+    lcd.print("700Hz 50BpM");
 }
 
 void beep(int curTone){
@@ -485,9 +514,30 @@ void beep(int curTone){
         }
         else{
             Serial.print(cur->character);
+            printToLCD(cur->character);
             cur = start;
         }
     }
+}
+
+void printToLCD(char character){
+    for(uint8_t i = 0; i<16; i++){
+        if(buffer[i] == '\0'){
+            buffer[i+1] = '\0';
+            buffer[i] = cur->character;
+            break;
+        }
+
+        // move
+        else if(i==15){
+            for(uint8_t j = 0; j<16; j++){
+                buffer[j] = buffer[j+1];
+            }
+            buffer[i] = cur->character;
+        }
+    }
+    lcd.setCursor(0,1);
+    lcd.printstr(buffer);
 }
 
 void loop(){
