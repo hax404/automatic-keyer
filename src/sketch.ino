@@ -10,7 +10,8 @@
 #define P_TXOUT 6    // Tranceiver output
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
-char buffer[17];
+char buffer[16];
+uint8_t actPos = 0;
 
 struct symbol{
     struct symbol *dit;
@@ -19,6 +20,7 @@ struct symbol{
 };
 
 struct symbol *start;
+struct symbol *empty;
 struct symbol *cur;
 
 // Source: https://commons.wikimedia.org/wiki/File:Morse_code_tree3.png
@@ -30,389 +32,395 @@ void createTree(){
         *temp = (struct symbol*) 0;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;
+    empty = temp;
+    empty->dit = empty;
+    empty->dah = empty;
+
+    temp = (struct symbol*) malloc (sizeof(struct symbol));
+    temp->character = 0xff;
+    temp->dit = empty;
+    temp->dah = empty;
     start = temp;
 
     cur = start;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'E';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'I';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'S';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'H';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '5';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '4';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'V';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = ' ';      // ŝ
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '3';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'U';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'F';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // é
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // é
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ü
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // ü
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // Đ
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // Đ
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '?';      // Question mark (note of interrogation or requestfor repetition of a transmission not understood)
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '_';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '2';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dit->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'A';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'R';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = 'l';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 'L';
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // è
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // è
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '"';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ä
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // ä
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '+';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '.';      // Full stop (period)
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dit->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'W';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'P';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // pb
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // pb
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // à
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // à
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '@';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'J';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '\'';     // Apostrophe
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '1';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dit->dah->dah->dah->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'T';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'N';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'D';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'B';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '6';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '-';      // Hyphen or dash or subtraction sign
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '=';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'X';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '/';      // Fraction bar or division sign
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'K';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'C';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ç
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // ç
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'Y';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '(';      // Left-hand bracket (parenthesis)
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = ')';      // Right-hand bracket (parenthesis)
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dit->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'M';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'G';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'Z';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '7';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // unused node
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // unused node
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = ',';      // Comma
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit->dit->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'Q';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dit->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = 'O';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ö
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // ö
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '8';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = ':';      // Colon or division sign
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dit->dit->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
-    temp->character = ' ';      // ch
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->character = 0xff;      // ch
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dah = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '9';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dah->dit = temp;
 
     temp = (struct symbol*) malloc (sizeof(struct symbol));
     temp->character = '0';
-    temp->dit = (struct symbol*) 0;
-    temp->dah = (struct symbol*) 0;
+    temp->dit = empty;
+    temp->dah = empty;
     start->dah->dah->dah->dah->dah = temp;
 }
 
@@ -435,6 +443,7 @@ void setup(){
 
     createTree();
     buffer[0] = '\0';
+    buffer[15] = '\0';
 
     tone(P_AUDIO, 1000, 150);
     delay(150);
@@ -449,7 +458,7 @@ void setup(){
     Serial.println("Started automatic keyer");
     printParams();
     lcd.cursor();
-    lcd.blink();
+    //lcd.blink();
     lcd.setCursor(0,1);
 }
 
@@ -516,28 +525,49 @@ void beep(int curTone){
             Serial.print(cur->character);
             printToLCD(cur->character);
             cur = start;
+            delay(SPEED*3);     // space between symbols = one dah
         }
     }
 }
 
 void printToLCD(char character){
-    for(uint8_t i = 0; i<16; i++){
-        if(buffer[i] == '\0'){
-            buffer[i+1] = '\0';
-            buffer[i] = cur->character;
-            break;
-        }
-
-        // move
-        else if(i==15){
-            for(uint8_t j = 0; j<16; j++){
-                buffer[j] = buffer[j+1];
+    if(character!=0xff){
+        for(uint8_t i = 0; i<=14; i++){
+            if(buffer[i] == '\0'&& i<=13){
+                if(i+1!=14){
+                    buffer[i+1] = '\0';
+                }
+                buffer[i] = character;
+                actPos = i+1;
+                break;
             }
-            buffer[i] = cur->character;
+
+            // move
+            if(i==14){
+                for(uint8_t j = 0; j<=13; j++){
+                    buffer[j] = buffer[j+1];
+                }
+                buffer[i] = character;
+                actPos = i+1;
+            }
         }
+        lcd.setCursor(0,1);
+        lcd.printstr(buffer);
     }
-    lcd.setCursor(0,1);
-    lcd.printstr(buffer);
+    // FIXME: if undefined symbol, short warning
+    else{
+        lcd.setCursor(actPos,1);
+        lcd.print(0xff);
+        delay(SPEED);
+        lcd.setCursor(actPos,1);
+        lcd.print(" ");
+        delay(SPEED);
+        lcd.setCursor(actPos,1);
+        lcd.print(0xff);
+        delay(SPEED);
+        lcd.setCursor(actPos,1);
+        lcd.print(" ");
+    }
 }
 
 void loop(){
